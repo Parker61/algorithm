@@ -1235,7 +1235,51 @@ def nums(nums, x):
         previous.add(i)
     return 0, 0
 ################################################################
+# Дан словарь из N слов. длина каждого не превосходит K.
+# В запаиси каждого из M слов текста(каждое длиний до K) может быть пропущена одна буква.
+# Для каждого слова сказать входит ли оно (возможно с одной пропущенной буквой) в словарь
+# 1/
+def find_word(dictionary, text):
+    word_set = set(dictionary)
 
+    for word in text:
+        for w_indx in range(len(word)):
+            word_set.add(word[:w_indx] + word[w_indx + 1:])
+
+    ans = []
+    for word in text:
+        ans.append(word in word_set)
+    return ans
+
+
+# 2/
+def word_in_dictionary(dictionary, word):
+    # Проверка, входит ли слово в словарь без пропущенной буквы
+    if word in dictionary:
+        return True
+
+    # Проверка, входит ли слово в словарь с одной пропущенной буквой
+    for i in range(len(word)):
+        # Удаление i-й буквы из слова
+        edited_word = word[:i] + word[i + 1:]
+        if edited_word in dictionary:
+            return True
+
+    return False
+
+
+def check_words_in_dictionary(dictionary, text):
+    result = []
+    for word in text:
+        is_in_dictionary = word_in_dictionary(dictionary, word)
+        result.append(is_in_dictionary)
+    return result
+
+
+dictionary = {'apple', 'banana', 'cherry', 'date'}
+text = ['apple', 'banan', 'chery', 'data']
+result = check_words_in_dictionary(dictionary, text)
+print(result)  # [True, False, False, False]
 ################################################################
 
 ################################################################
