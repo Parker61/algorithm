@@ -105,6 +105,8 @@ for n in range(element - 2):
     # cur = tmp
     prew, cur = cur, cur + prew
 print(str(element) + ' элемент последовательности равен ' + str(cur))  # 5
+
+
 ################################################################
 def fibonacci(n):
     prev, cur = 0, 1
@@ -114,6 +116,8 @@ def fibonacci(n):
 
 
 print(*fibonacci(5))
+
+
 ################################################################
 def fibonacci():
     prev, cur = 0, 1
@@ -122,36 +126,55 @@ def fibonacci():
         prev, cur = cur, prev + cur
 
 
-gen=fibonacci()
-for _ in range(5+1):
+gen = fibonacci()
+for _ in range(5 + 1):
     print(next(gen))
+
+
 ################################################################
-р
+# рекурсия________________________
+# возведение числа x в степень y
+def degree(x, y):
+    if y == 0:
+        return 1
+    if y == 1:
+        return x
+    # оставшиеся кейсы, когда степень > 1
+    if (y != 1):
+        return (x * degree(x, y - 1))
 
 
+x = int(input("Введите число: "))
+y = int(input("Введите его степень: "))
+print("Результат возведения в степень равен:", degree(x, y))
 
 
+################################
+# подсчёт длины коллекции
+def length(collection):
+    if not collection:
+        return 0
+    return 1 + length(collection[1:])
 
 
+n = [1, 2, 3, 4, 5]
+print("Длина коллекции равна: ")
+print(length(n))
 
 
+# Создание счётчика — начинается с 1 и рекурсивно прибавляется к ней ещё по 1, что постепенно отрезает от коллекции по
+# одному элементу. Это делается с помощью среза коллекции collection[1:].
+################################################################
+# Ханойские башни
+def move(n, start, finish):
+    if n == 1:
+        print("Перенести диск 1 со стержня", start, "на стержень", finish)
+    else:
+        temp = (6 - start) - finish
+        move(n - 1, start, temp)
+        print("Перенести диск", n, "со стержня", start, "на стержень", finish)
+        res = (n - 1, temp, finish)
+        print(res)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        return res
+################################################################
