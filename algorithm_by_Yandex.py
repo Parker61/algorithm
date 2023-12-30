@@ -618,6 +618,72 @@ print(len(points))
 print(" ".join(map(str, points)))
 
 
+############################################################################################################
+# Вычисление арифметического выражения без скобок Ввод содержит только
+# строку � s длиной � n. Строка состоит из чисел операндов (числа от 0 до 99)
+# и операций +, -, *. Посчитайте значения выражения.
+# Формат ввода Ограничения: строка содержит максимум 20 20 символов.
+# Формат вывода Выведите ответ на задачу.
+# Пример 1 Ввод 5-8+7*4-8+9 Вывод 26 код на питоне
+# алгоритм с использованием стека.
+def calculate_expression(expression):
+    operators = []
+    operands = []
+
+    # Разделяем арифметическое выражение на операторы и операнды
+    i = 0
+    while i < len(expression):
+        if expression[i].isdigit():
+            # Считываем число и добавляем его в список операндов
+            num = ''
+            while i < len(expression) and expression[i].isdigit():
+                num += expression[i]
+                i += 1
+            operands.append(int(num))
+        elif expression[i] in ['+', '-', '*']:
+            # Если встретили оператор, добавляем его в список операторов
+            operators.append(expression[i])
+            i += 1
+        else:
+            # Пропускаем пробелы
+            i += 1
+    # operands = sorted(operands, reverse=True) # may be will sort
+    # Выполняем операции в порядке убывания приоритета
+    while '*' in operators:
+        i = operators.index('*')
+        result = operands[i] * operands[i + 1]
+        del operators[i]
+        del operands[i]
+        operands[i] = result
+
+    while operators:
+        operator = operators.pop(0)
+        operand = operands.pop(0)
+        next_operand = operands.pop(0)
+        if operator == '+':
+            result = operand + next_operand
+        elif operator == '-':
+            result = operand - next_operand
+        operands.insert(0, result)
+
+    return operands[0]
+
+
+expression = input()
+result = calculate_expression(expression)
+print(result)
+
+
+#######################################################################################################
+################################################################################################################
+#######################################################################################################
+################################################################################################################
+#######################################################################################################
+################################################################################################################
+#######################################################################################################
+################################################################################################################
+#######################################################################################################
+################################################################################################################
 #######################################################################################################
 ################################################################################################################
 def exchange(money):
@@ -2059,7 +2125,328 @@ dictionary = {'apple', 'banana', 'cherry', 'date'}
 text = ['apple', 'banan', 'chery', 'data']
 result = check_words_in_dictionary(dictionary, text)
 print(result)  # [True, False, False, False]
+
+
 ################################################################
+# на шахматной доске NxN M ладей. Сколько пар ладей бьют друг друга (ладьи задаются координатами)
+# посказка количество пар считается - из общего количества ладей по вертикали / горизонтали минус 1
+
+def count_rook(coords):
+    def addcolrow(d_colrow, key):  # запись в столбец/строку ладей
+        if key not in d_colrow:
+            d_colrow[key] = 0
+        d_colrow[key] += 1
+
+    def count_pairs(d_colrow):
+        pairs = 0
+        for key in d_colrow:
+            pairs += d_colrow[key] - 1  # количество пар -1
+        return pairs
+
+    d_col = {}
+    d_row = {}
+    for row, col in coords:
+        addcolrow(d_row, row)
+        addcolrow(d_col, col)
+    return count_pairs(d_col) + count_pairs(d_row)  # сумма по столбцам и строкам
+
+
+coords = [(2, 4), (2, 3), (4, 5), (7, 7)]
+print(count_rook(coords))  # 1
+
+
+################################################################
+# Сгруппировать слова по общим буквам
+# вывести в виде сгруппированных списков
+
+def group_words(words):
+    groups = {}
+    for word in words:
+        key_sort_word = ''.join(sorted(word))  # отсортировать каждый раз слово и сравнить с ключом
+        if key_sort_word not in groups:
+            groups[key_sort_word] = []
+        groups[key_sort_word].append(word)
+
+    return list(groups.values())
+    # ans = []
+    # for sort_word in groups:
+    #     ans.append(groups[sort_word])  # добавить значения
+    # return ans
+
+
+# 2/
+def group_words(words):
+    groups = {}
+
+    def sort_key(word) -> str:  # считает сколько раз каждого символав слове: a1b3d4 из bbbadddd
+        symcnt = {}
+        for sym in words:
+            if sym not in symcnt:
+                symcnt[sym] = 0
+            symcnt[sym] += 1
+        lst = []
+        for sym in sorted(symcnt.keys()):
+            lst.append(sym)  # a
+            lst.append(symcnt[sym])  # 1
+        return ''.join(lst)  # 'a1b3d4'
+
+    for word in words:
+        key_sort_word = sort_key(word)  # 'a1b3d4'
+        if key_sort_word not in groups:
+            groups[key_sort_word] = []
+        groups[key_sort_word].append(word)
+
+    ans = []
+    for sort_word in groups:
+        ans.append(groups[sort_word])  #
+    return ans
+
+
+# 2/
+
+################################################################
+# Префиксные суммы
+# реализация ч/з RAQ
+def maked_prefix(nums):
+    prefix = [0] * (len(nums) + 1)
+    for i in range(1, len(nums) + 1):
+        prefix[i] = prefix[i - 1] + nums[i - 1]
+    return prefix
+
+
+################################################################
+# последовательность чисел длиной N и M запросов. Запросы:сколько нулей на полуинтервале [L,R]
+# подсказка для каждого префикса посчитаем количество нулей
+def maked_prefix(nums):
+    prefix = [0] * (len(nums) + 1)
+    for i in range(1, len(nums) + 1):
+        if nums[i - 1] == 0:
+            prefix[i] = prefix[i - 1] + 1
+        else:
+            prefix[i] = prefix[i - 1]
+
+    return prefix
+
+
+def countzero(maked_prefix, l, r):
+    return maked_prefix(r) - maked_prefix(l)
+
+
+################################################################
+# алгоритм бинарного поиска
+
+def binarysearch(arr, x, left, right):
+    if right >= left:
+        mid = left + (right - left) // 2  # indx
+        if arr[mid] == x:
+            return mid
+        elif arr[mid] > x:
+            return binarysearch(arr, x, left, mid - 1)
+        else:
+            return binarysearch(arr, x, mid + 1, right)
+    else:
+        return -1
+
+
+arr = [2, 3, 5, 6, 7, 3, 4, 5, 6, 7]
+x = 7
+print(binarysearch(arr, x, left=0, right=len(arr) - 1))  # indx
+
+
+################################################################
+# дана отсортированная последоввательность  длиной N и число K.
+# найти количество пар чисел А и В таких что В-А > K.
+
+
+def cnt_pairs(nums, k):
+    pairs = 0
+    last = 0
+    for i in range(len(nums)):
+        while last < len(nums) and nums[last] - nums[i] <= k:
+            last += 1
+        pairs += len(nums) - last
+    return pairs
+
+
+# 2
+def count_pairs(numbers, k):
+    count = 0
+    i = 0
+    j = 1
+    while j < len(numbers):
+        if numbers[j] - numbers[i] > k:
+            count += (len(numbers) - j)
+            i += 1
+        else:
+            j += 1
+    return count
+
+
+# Пример использования
+numbers = [1, 3, 5, 7, 9]
+k = 2
+result = count_pairs(numbers, k)
+print(result)
+
+
+# Вывод: 6
+################################################################
+# Футбол - команда сплоченная если проф сумма любых двух игроков больше професионализма любого из сильных игроков.
+# найти макс суммарный профессионализм коменды из отсртированной последовательности профессионализма
+
+
+def beast_team(players):
+    last, now_sum, best_sum = 0, 0, 0
+
+    for first in range(len(players)):
+        while last < len(players) and (first == last or players[first] + players[first + 1] >= players[last]):
+            now_sum += players[first] + players[first + 1]
+            last += 1
+        best_sum = max(best_sum, now_sum)
+        now_sum -= players[first]
+    return best_sum
+
+
+l = [1, 1, 3, 3, 4, 8, 9, 10, 12]
+print(beast_team(l))
+
+
+# Операция now_sum -= players[first] выполняется для того, чтобы исключить первого игрока из текущей суммы now_sum и
+# перейти к следующему возможному сочетанию игроков.Если мы просто присвоим now_sum = 0, то мы будем начинать
+# суммирование с самого начала каждый раз после исключения текущего игрока. Это означает, что мы будем учитывать
+# только одиночные игроки, а не все возможные комбинации двух игроков.Поэтому операция now_sum -= players[first]
+# позволяет нам "сдвигать" начало суммирования на следующего возможного игрока, чтобы учесть все комбинации двух
+# игроков. Это позволяет найти команду с максимальной суммой профессионализма.
+
+################################################################
+# даны две отсортированные последоватеотности чисел. Трубуется слить их в одну
+
+def merge(nums_1, nums_2):
+    merged = [0] * (len(nums_1) + len(nums_2))
+    first_1 = first_2 = 0
+    for i in range(len(nums_1) + len(nums_2)):
+        if first_1 != len(nums_1) and (first_2 == len(nums_2) or nums_1[first_1] <= nums_2[first_2]):
+            merged[i] = nums_1[first_1]
+            first_1 += 1
+        else:
+            merged[i] = nums_2[first_2]
+            first_2 += 1
+
+    return merged
+
+
+# 2.
+def merge_sorted_lists(lst1, lst2):
+    return sorted(lst1 + lst2)
+
+
+################################################################
+# левый бинарный поиск
+def left_binsearch(l, r, check, checkparams):
+    while l < r:
+        m = (l + r) // 2  # скругление вниз
+        if check(m, checkparams):
+            r = m
+        else:
+            l = m + 1
+
+    return l
+
+
+################################################################################
+# в управляющий совет входят родители , учителя и учениеки, причём родителей должно быть не менее 1/3.
+# Определить сколько родителей минимально нужно добавить чтобы их было не менее трети. Дано N-человек всего
+# из них K-родителей.
+def bin_search(N, K):
+    l = 0
+    r = N  # количество родителей, которых необходимо добавить
+    while l < r:
+        mid = (l + r) // 2  # добавить кол-во родителей
+        if (N + mid) <= 3 * (K + mid):  # 3* чтобы избежать деления и получения float при делении на 3
+            r = mid
+        else:
+            l = mid + 1
+
+    return l
+
+
+N = 100
+K = 20
+print(bin_search(N, K))  # 20
+################################################################
+# В первый день К задач а далее на 1 больше. Сколько дней уйдёт на N задач.
+n = 10
+k = 2
+
+
+def left_binsearch(l, r, check, n, k):
+    while l < r:
+        m = (l + r) // 2
+        if check(m, n, k):
+            r = m
+        else:
+            l = m + 1
+    return l
+
+
+def check(days, n, k):
+    return (k + (k + days - 1)) * days // 2 >= n
+
+
+print(left_binsearch(0, n, check, n, k))  # 4
+
+
+# 2/
+def not_bi(n, k):
+    count = 1
+    s = k
+    while s <= n:
+        k += 1
+        s += k
+        count += 1
+
+    return count
+
+
+print(not_bi(n, k))
+################################################################
+# Сайт поселило N челеовек для каждого t_in t_out включительно. Определить суммарное аремя на сайте хотя бы
+# одного человека
+
+def time_visitors(n, t_in, t_out):
+    events = []
+    for i in range(n):
+        events.append((t_in[i], -1))  # -1 приход
+        events.append((t_out[i], 1))  # 1 выход
+    events.sort()  # sort events по t_in , t_out
+    online = 0  # кол-во
+    note_time = 0  # продолжительность
+    for i in range(len(events)):
+        if online > 0:  # если кто-то есть
+            note_time += events[i][0] - events[i - 1][0]  # добавить промежуток от предыдущего события
+        if events[i][1] == -1:
+            online += 1
+        else:
+            online -= 1
+    return note_time
+
+################################################################
+########################################################################################
+# Тренировки по алгоритмам 2.0
+
+################################################################
+# Определиьт мин кол-во станций метро туда и обратно при поездках
+
+n, i, j = map(int, input().split())
+dist_1 = abc(j - 1) - 1
+dist_2 = n - 2 - dist_1
+print(min(dist_1, dist_2))
+
+################################################################
+# Определить мин суммарное расстояние которое проезжют ученики. Дома по прямой, даны координаты и число учеников
+coord = list(map(int, input().split()))
+n = int(input())
+coord_school = coord[len(coord) // 2]
 
 ################################################################
 
@@ -2098,6 +2485,19 @@ print(result)  # [True, False, False, False]
 ################################################################
 
 ################################################################
+
+################################################################
+
+################################################################
+
+################################################################
+
+################################################################
+
+################################################################
+
+################################################################
+
 
 ################################################################
 
